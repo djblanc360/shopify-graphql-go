@@ -41,16 +41,28 @@ func products(url string, token string, handle string) (map[string]interface{}, 
             id
             title
             description
+            featuredImage {
+                url
+                altText
+            }
+            images(first: 10) {
+                edges {
+                    node {
+                        url
+                        altText
+                    }
+                }
+            }
             variants(first: 10) {
                 edges {
                     node {
                         id
                         title
                         price
-						image {
-							altText
-							url
-						}
+                        image {
+                            altText
+                            url
+                        }
                     }
                 }
             }
@@ -161,7 +173,27 @@ func collectionProducts(url string, token string, handle string) (string, error)
 			"id":          productNodeDetails["id"].(string),
 			"title":       productNodeDetails["title"].(string),
 			"description": productNodeDetails["description"].(string),
+			"images":      []map[string]interface{}{},
 			"variants":    []map[string]interface{}{},
+		}
+
+		if featuredImage, ok := productNodeDetails["featuredImage"].(map[string]interface{}); ok {
+			product["featuredImage"] = map[string]interface{}{
+				"altText": featuredImage["altText"].(string),
+				"url":     featuredImage["url"].(string),
+			}
+		}
+
+		if images, ok := productNodeDetails["images"].(map[string]interface{}); ok {
+			imageEdges := images["edges"].([]interface{})
+			for _, edge := range imageEdges {
+				imageNode := edge.(map[string]interface{})["node"].(map[string]interface{})
+				image := map[string]interface{}{
+					"altText": imageNode["altText"].(string),
+					"url":     imageNode["url"].(string),
+				}
+				product["images"] = append(product["images"].([]map[string]interface{}), image)
+			}
 		}
 
 		// extract variants
