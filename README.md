@@ -1,0 +1,2 @@
+Test nested Shopify GraphQL queries with Go. Referencing when creaeting a Go backend for a headless Shopify store. Simply receiving a collection by a particular handle, in this case `GET http://localhost:8080/api/collections/frontpage` and then outputting as much information I can about the collection's products and variants.
+Not relying on `structs/`
